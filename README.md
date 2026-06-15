@@ -107,14 +107,28 @@ queueing discipline.
 
 `run_bench.py` and `run_usecase.py` execute real transaction scripts on the
 **SagaPython runtime** (the reference implementation of the SagaChain object
-model). They therefore require that runtime to be importable. Install it and put
-its `sagapython/` packages on `PYTHONPATH` (and its native dependencies such as
-`posix_ipc` and `pynacl`), then:
+model). The exact runtime version used for the published measurements is pinned
+as a git submodule at `external/sagapython`
+(`https://code.prasaga.com/sagachain/sagapython`, commit
+`378deaaa154b066d5905c3149dfbab57836f4887`, "fixed Log()"). Fetch it with:
+
+```bash
+git submodule update --init external/sagapython     # or: git clone --recurse-submodules ...
+```
+
+The runtime additionally needs `pynacl` (its `posix_ipc`/protobuf/LevelDB
+dependencies are stubbed by `bench/env_bootstrap.py`, which opens an in-memory
+store). To run against a different checkout instead of the pinned submodule, set
+`SAGAPYTHON_HOME` to that checkout's root. Then:
 
 ```bash
 python3 run_bench.py      # re-measures the per-operation costs -> results/bench_results.json
 python3 run_usecase.py    # re-runs the K-directive experiment  -> results/usecase_results.json
 ```
+
+Re-running these reproduces the **object counts and linear shape exactly** but the
+**absolute milliseconds depend on the host**; keep the shipped
+`results/bench_results.json` to regenerate the published figure with `run_sim.py`.
 
 Re-running these will reproduce the **object counts and the linear shape** exactly,
 but the **absolute milliseconds will differ** from run to run and machine to

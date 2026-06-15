@@ -1,0 +1,3 @@
+[submodule "external/sagapython"]
+	path = external/sagapython
+	url = https://code.prasaga.com/sagachain/sagapython.git

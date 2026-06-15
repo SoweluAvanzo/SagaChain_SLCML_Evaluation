@@ -21,9 +21,43 @@ import time
 import importlib
 
 # --------------------------------------------------------------------------- paths
-BASE = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                    '..', '..', 'Finance Pilot', 'src', 'sagapython')
-BASE = os.path.abspath(BASE)
+# The SagaPython runtime is resolved, in order, from:
+#   1. $SAGAPYTHON_HOME      — an explicit checkout of the runtime; else
+#   2. external/sagapython   — the git submodule this repo pins to the exact
+#                              commit the measurements were taken on
+#                              (sagachain/sagapython @ 378deaaa, "fixed Log()").
+# Otherwise a clear, actionable error is raised. This guarantees a re-run imports
+# the *same* runtime version that produced the published numbers, instead of
+# whatever happens to sit on the host. (Earlier versions hard-coded a sibling
+# `Finance Pilot/src/sagapython` path, which only existed on the author's machine
+# and pinned no version — see README "Reproducing the prototype measurements".)
+PINNED_COMMIT = '378deaaa154b066d5905c3149dfbab57836f4887'
+_THIS_DIR = os.path.dirname(os.path.abspath(__file__))
+
+
+def _resolve_sagapython_home():
+    """Locate the SagaPython runtime root (the dir containing sagapython/product)."""
+    env = os.environ.get('SAGAPYTHON_HOME')
+    if env:
+        cand = os.path.abspath(os.path.expanduser(env))
+        if os.path.isdir(os.path.join(cand, 'sagapython', 'product')):
+            return cand
+        raise RuntimeError(
+            "SAGAPYTHON_HOME=%r is not a SagaPython checkout "
+            "(no sagapython/product/ inside it)." % env)
+    submodule = os.path.abspath(os.path.join(_THIS_DIR, '..',
+                                             'external', 'sagapython'))
+    if os.path.isdir(os.path.join(submodule, 'sagapython', 'product')):
+        return submodule
+    raise RuntimeError(
+        "SagaPython runtime not found. Fetch the pinned runtime with\n"
+        "    git submodule update --init external/sagapython\n"
+        "or set SAGAPYTHON_HOME to a checkout of\n"
+        "    https://code.prasaga.com/sagachain/sagapython  (commit %s)."
+        % PINNED_COMMIT[:10])
+
+
+BASE = _resolve_sagapython_home()
 PRODUCT = os.path.join(BASE, 'sagapython', 'product')
 APPS = os.path.join(BASE, 'sagapython', 'apps')
 SAGAPYTHON = os.path.join(BASE, 'sagapython')

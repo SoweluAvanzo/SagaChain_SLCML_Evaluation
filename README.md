@@ -162,6 +162,9 @@ MODEL.md            Full derivation of the analytical model and its assumptions
 - `run_usecase.py` → the *2.000 objects per directive* result and Table 3.
 - `run_model.py` / `MODEL.md` → the bounds of Section 3 (the `S_eff` form, the
   cross-shard coordinator bound, the `Θ(n²)` committee cost, the security pooling).
+- `solidity/` → EVM counterpart of the consent directive; `npm install && npm test`
+  runs the four case-study scenarios ("the Solidity version passes the same four
+  scenarios", Section 5.3).
 
 ## 7. Honesty / scope
 The SagaPython runtime is a research prototype; the security mechanisms (committee

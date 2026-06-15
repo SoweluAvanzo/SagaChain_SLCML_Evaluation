@@ -1,0 +1,16 @@
+{
+  "name": "consent-directive-solidity",
+  "version": "1.0.0",
+  "private": true,
+  "description": "EVM counterpart of the SLCML consent directive: the four case-study scenarios as a Hardhat test.",
+  "scripts": {
+    "test": "hardhat test"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-chai-matchers": "^2.0.0",
+    "@nomicfoundation/hardhat-ethers": "^3.0.0",
+    "chai": "^4.3.0",
+    "ethers": "^6.13.0",
+    "hardhat": "^2.22.0"
+  }
+}
